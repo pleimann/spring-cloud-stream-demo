@@ -1,6 +1,4 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
-import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 plugins {
     id("org.springframework.boot") version "2.6.0"
@@ -21,43 +19,28 @@ repositories {
 }
 
 extra["springCloudVersion"] = "2021.0.0-RC1"
-extra["confluentKafkaVersion"] = "7.0.0"
 
 dependencies {
     implementation(project(":data"))
 
-    implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.springframework.cloud:spring-cloud-starter")
-    implementation("org.springframework.cloud:spring-cloud-stream")
-    implementation("org.springframework.cloud:spring-cloud-schema-registry-client:1.1.5")
-    implementation("org.springframework.cloud:spring-cloud-stream-binder-kafka")
-    implementation("io.confluent:kafka-avro-serializer:${property("confluentKafkaVersion")}")
-
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+    runtimeOnly("io.micrometer:micrometer-registry-prometheus")
+    annotationProcessor("org.projectlombok:lombok")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("io.projectreactor:reactor-test")
 }
 
 dependencyManagement {
     imports {
         mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
     }
-}
-
-springBoot {
-    buildInfo()
-}
-
-tasks.withType<BootJar>() {
-    // Set required because Kotlin sees this as an immutable property
-    archiveFileName.set("app.${archiveExtension.get()}")
-}
-
-tasks.withType<BootBuildImage>() {
-    imageName = "${rootProject.name}_${project.name}:latest"
 }
 
 tasks.withType<KotlinCompile> {

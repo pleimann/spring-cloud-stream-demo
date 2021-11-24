@@ -20,7 +20,7 @@ import java.util.concurrent.atomic.AtomicLong
 
 @EnableScheduling
 @SpringBootApplication
-class ProducerApplication {
+class DocumentStoreApplication {
     @Bean
     fun documentStoredTopic(): NewTopic {
         return TopicBuilder
@@ -57,5 +57,5 @@ fun Any.log(message: String, exception: Throwable? = null) =
     LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME).info(message, exception)
 
 fun main(args: Array<String>) {
-    runApplication<ProducerApplication>(*args)
+    runApplication<DocumentStoreApplication>(*args)
 }
