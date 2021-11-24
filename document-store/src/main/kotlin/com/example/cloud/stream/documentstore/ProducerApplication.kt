@@ -1,4 +1,4 @@
-package com.example.cloud.stream.producer
+package com.example.cloud.stream.documentstore
 
 import ch.qos.logback.classic.Logger
 import com.example.cloud.stream.data.DocumentStoredAvro
