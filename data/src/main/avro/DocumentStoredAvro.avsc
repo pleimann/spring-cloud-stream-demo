@@ -1,0 +1,19 @@
+{
+  "namespace": "com.example.cloud.stream.data",
+  "type": "record",
+  "name": "DocumentStoredAvro",
+  "fields": [
+    {
+      "name": "id",
+      "type": "long"
+    },
+    {
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "name": "count",
+      "type": "long"
+    }
+  ]
+}

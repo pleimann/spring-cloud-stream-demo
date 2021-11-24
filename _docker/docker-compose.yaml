@@ -1,0 +1,24 @@
+version: '3.9'
+
+networks:
+  kafka-cluster:
+    driver: bridge
+
+services:
+  producer:
+    build:
+      context: ../producer
+      dockerfile: ../_docker/springboot.Dockerfile
+    image: spring-cloud-stream-demo_producer
+    hostname: producer
+    container_name: producer
+    depends_on:
+      - broker
+      - schema-registry
+    environment:
+      WAIT_HOSTS: "broker:29092, schema-registry:8081"
+      WAIT_TIMEOUT: 120
+      WAIT_SLEEP_INTERVAL: 2
+      SPRING_KAFKA_BOOTSTRAP-SERVERS: broker:29092
+    networks:
+      - kafka-cluster

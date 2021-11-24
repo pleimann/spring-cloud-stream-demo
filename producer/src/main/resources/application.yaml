@@ -1,0 +1,18 @@
+spring:
+  kafka:
+    bootstrap-servers: broker:29092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+    properties:
+        schema.registry.url: http://schema-registry:8081 # For use of KafkaTemplate
+  cloud:
+    stream:
+      default:
+        contentType: application/*+avro
+    schema:
+      avro:
+        schema-locations: ../avro
+        dynamic-schema-generation-enabled: true
+    schema-registry-client:
+      endpoint: http://schema-registry:8081 #For use of spring-cloud-stream
