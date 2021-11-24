@@ -52,21 +52,27 @@ services:
 
         /etc/confluent/docker/run
 
-  ui:
+  kafdrop:
     build:
-      dockerfile: ../kafdrop.Dockerfile
+      dockerfile: kafdrop.Dockerfile
     restart: "no"
     hostname: kafdrop
     container_name: kafdrop
+    depends_on:
+      - broker
+      - schema-registry
     ports:
-      - "9000:9000"
+      - '9000:9000'
+    expose:
+      - '9000'
+    networks:
+      - kafka-cluster
     environment:
-      WAIT_HOSTS: "broker:29092"
-      WAIT_BEFORE: 30
+      WAIT_HOSTS: "broker:29092, schema-registry:8081"
+      WAIT_TIMEOUT: 120
       WAIT_SLEEP_INTERVAL: 2
       KAFKA_BROKERCONNECT: "broker:29092"
-    depends_on:
-      - "broker"
+      SCHEMAREGISTRY_CONNECT: "http://schema-registry:8081"
 
   schema-registry:
     image: confluentinc/cp-schema-registry:7.0.0

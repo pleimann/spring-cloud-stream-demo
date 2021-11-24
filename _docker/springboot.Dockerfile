@@ -2,8 +2,10 @@ FROM gradle:7-jdk17 AS build
 WORKDIR /app
 
 COPY . /app
-RUN --mount=type=cache,target=/root/.gradle gradle clean build --exclude-task test --no-daemon --no-watch-fs
-RUN java -Djarmode=layertools -jar /app/build/libs/app.jar extract --destination /app/build/extracted
+
+ARG PROJECT
+RUN --mount=type=cache,target=/root/.gradle gradle clean :${PROJECT}:build --exclude-task test --no-daemon --no-watch-fs
+RUN java -Djarmode=layertools -jar /app/${PROJECT}/build/libs/app.jar extract --destination /app/${PROJECT}/build/extracted
 
 
 FROM openjdk:17-jdk-bullseye
@@ -17,7 +19,8 @@ EXPOSE 8080
 ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.9.0/wait /wait
 RUN chmod +x /wait
 
-ARG BUILD_LOC=/app/build/extracted
+ARG PROJECT
+ARG BUILD_LOC=/app/${PROJECT}/build/extracted
 COPY --from=build ${BUILD_LOC}/dependencies/ ./
 COPY --from=build ${BUILD_LOC}/spring-boot-loader/ ./
 COPY --from=build ${BUILD_LOC}/snapshot-dependencies/ ./

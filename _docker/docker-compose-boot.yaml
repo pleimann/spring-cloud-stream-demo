@@ -1,0 +1,17 @@
+version: "3.9"
+
+services:
+  _spring-boot:
+    build:
+      dockerfile: _docker/springboot.Dockerfile
+      context: ../
+    depends_on:
+      - broker
+      - schema-registry
+    environment:
+      WAIT_HOSTS: "broker:29092, schema-registry:8081"
+      WAIT_TIMEOUT: 120
+      WAIT_SLEEP_INTERVAL: 2
+      SPRING_KAFKA_BOOTSTRAP-SERVERS: broker:29092
+    networks:
+      - kafka-cluster
